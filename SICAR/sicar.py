@@ -124,12 +124,8 @@ class Sicar(Url):
             certificate authority, you can remove the `verify=False` parameter to enable SSL certificate verification by
             default.
         """
-
-        ctx = ssl.create_default_context()
-        ctx.check_hostname = False
-        ctx.verify_mode = ssl.CERT_NONE
-
-        response = self._session.get(url, context=ctx, *args, **kwargs)
+        
+        response = self._session.get(url, *args, **kwargs)
 
         if not response.ok:
             raise UrlNotOkException(url)
