@@ -19,6 +19,9 @@ from typing import Dict
 from pathlib import Path
 from urllib.parse import urlencode
 
+import ssl
+import urllib.request
+
 from SICAR.drivers import Captcha, Tesseract
 from SICAR.state import State
 from SICAR.url import Url
@@ -121,7 +124,12 @@ class Sicar(Url):
             certificate authority, you can remove the `verify=False` parameter to enable SSL certificate verification by
             default.
         """
-        response = self._session.get(url, verify=False, *args, **kwargs)
+
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+
+        response = self._session.get(url, context=ctx, *args, **kwargs)
 
         if not response.ok:
             raise UrlNotOkException(url)
